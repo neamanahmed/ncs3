@@ -1,0 +1,39 @@
+name: "Warden: Regional S3 Enforcement"
+
+on:
+  schedule:
+  - cron: '*/5 * * * *' # Runs every 5 minutes
+  workflow_dispatch:
+
+jobs:
+  regional-sweep:
+    runs-on: ubuntu-latest
+    environment: myenvironment
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python & Ansible
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          pip install boto3 botocore ansible
+          ansible-galaxy collection install amazon.aws community.general
+
+      - name: Run Regional Sweep
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+        run: |
+          ansible-playbook ansible/remediate_and_notify.yml \
+            -e "aws_region=${{ secrets.AWS_REGION }}" \
+            -e "admin_email=admin@company.com" \
+            -e "smtp_user=${SMTP_USER}" \
+            -e "smtp_pass=${SMTP_PASS}"

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .container { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .header { background-color: #232f3e; color: white; padding: 10px; text-align: center; border-radius: 5px; }
+        .status-box { padding: 15px; margin: 10px 0; border-radius: 5px; font-weight: bold; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .info-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .info-table td, .info-table th { border: 1px solid #ddd; padding: 8px; }
+        .info-table th { background-color: #f2f2f2; text-align: left; }
+        .highlight { color: #ec7211; font-weight: bold; }
+        .bucket-list { margin: 0; padding-left: 18px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>AWS Security Governance Alert</h2>
+        </div>
+        <p>The <strong>Autonomous Guardrail</strong> detected configuration drift in your AWS environment.</p>
+
+        <div class="status-box success">
+            ✅ STATE: DRIFT REMEDIATED SUCCESSFULLY
+        </div>
+
+        <table class="info-table">
+            <tr><th>Resource Type</th><td>S3 Bucket</td></tr>
+            <tr>
+                <th>Buckets Remedied</th>
+                <td class="highlight">
+                    <ul class="bucket-list">
+                    {% for bucket in remediated_bucket_names %}
+                        <li>{{ bucket }}</li>
+                    {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr><th>Action Taken</th><td>Re-enforced Public Access Block</td></tr>
+            <tr><th>Remediation Tool</th><td>Ansible (amazon.aws)</td></tr>
+            <tr><th>Detection Time</th><td>{{ ansible_date_time.iso8601 }}</td></tr>
+        </table>
+
+        <p style="font-size: 12px; color: #666; margin-top: 20px;">
+            This action was performed automatically to maintain compliance with <strong>NIST SP 800-53</strong> and <strong>NCA ECC-1</strong> standards.
+        </p>
+    </div>
+</body>
+</html>

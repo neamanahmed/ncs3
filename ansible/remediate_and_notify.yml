@@ -1,0 +1,50 @@
+---
+- name: "Part 4: Regional S3 Warden (Heartbeat)"
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  vars:
+    # Variables passed from GitHub Actions
+    target_region: "{{ aws_region | default('us-east-1') }}"
+    admin_email: "{{ admin_email }}"
+    smtp_user: "{{ smtp_user }}"
+    smtp_pass: "{{ smtp_pass }}"
+
+  tasks:
+    - name: "Step 1: Discover all S3 Buckets in Region"
+      amazon.aws.s3_bucket_info:
+        region: "{{ target_region }}"
+      register: bucket_list
+
+    - name: "Step 2: Enforce Security Policy on Every Bucket"
+      amazon.aws.s3_bucket:
+        name: "{{ item.name }}"
+        region: "{{ target_region }}"
+        public_access:
+          block_public_acls: true
+          block_public_policy: true
+          ignore_public_acls: true
+          restrict_public_buckets: true
+        state: present
+      loop: "{{ bucket_list.buckets }}"
+      register: sweep_results
+
+    - name: "Step 3: Capture Remediated Bucket Names"
+      set_fact:
+        # This will create a list of remeidiated buckets and notifiy by email only if remdiated.
+        remediated_bucket_names: "{{ sweep_results.results | selectattr('changed', 'equalto', true) | map(attribute='item.name') | list }}"
+
+    - name: "Step 4: Send Notification"
+      community.general.mail:
+        host: smtp.gmail.com
+        port: 587
+        username: "{{ smtp_user }}"
+        password: "{{ smtp_pass }}"
+        to: "{{ admin_email }}"
+        subject: "REMEDIATED: S3 Security Drift Found in {{ target_region }}"
+        subtype: html
+        # Using your original template path
+        body: "{{ lookup('template', '../templates/s3_report.html.j2') }}"
+      # Only send if at least one bucket was fixed
+      when: remediated_bucket_names | length > 0
