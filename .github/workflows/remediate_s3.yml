@@ -2,7 +2,7 @@ name: "Warden: Regional S3 Enforcement"
 
 on:
   schedule:
-  - cron: '*/5 * * * *' # Runs every 5 minutes
+#  - cron: '*/5 * * * *' # Runs every 5 minutes
   workflow_dispatch:
 
 jobs:
