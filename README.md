@@ -63,4 +63,3 @@ on:
 ❓ Why not use AWS Config?
 While AWS Config is a powerful native tool, Project Warden was architected for organizations that prioritize Cloud Agnostic Governance and Deterministic Enforcement.
 ![Warden vs AWS Config Comparison](cmp-config-ansi.JPG)
-
