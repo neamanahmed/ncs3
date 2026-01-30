@@ -58,9 +58,9 @@ on:
     - cron: '*/5 * * * *'
   workflow_dispatch:
     # Allows manual audit on-demand
+```
 
-
-### ❓ Why not use AWS Config?
+### **❓ Why not use AWS Config?**
 
 While AWS Config is a powerful native tool, **Project Warden** was architected for organizations that prioritize **Cloud Agnostic Governance** and **Deterministic Enforcement**.
 
