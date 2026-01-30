@@ -60,6 +60,10 @@ on:
     # Allows manual audit on-demand
 
 ### **Technical FAQ**
-❓ Why not use AWS Config?
-While AWS Config is a powerful native tool, Project Warden was architected for organizations that prioritize Cloud Agnostic Governance and Deterministic Enforcement.
+### ❓ Why not use AWS Config?
+
+While AWS Config is a powerful native tool, **Project Warden** was architected for organizations that prioritize **Cloud Agnostic Governance** and **Deterministic Enforcement**.
+
 ![Warden vs AWS Config Comparison](cmp-config-ansi.JPG)
+
+> **Strategic Insight:** By moving away from provider-specific logic, we satisfy **NCSC CAF Objective B1**, ensuring that security policy is a version-controlled, portable asset rather than a localized configuration.onfig Comparison](cmp-config-ansi.JPG)
